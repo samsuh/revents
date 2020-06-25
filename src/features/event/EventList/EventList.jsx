@@ -5,9 +5,9 @@ export default class EventList extends Component {
   render() {
     return (
       <>
-        <EventListItem />
-        <EventListItem />
-        <EventListItem />
+        {this.props.events.map((event) => (
+          <EventListItem key={event.id} event={event} />
+        ))}
       </>
     );
   }
