@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Grid, Button } from "semantic-ui-react";
 import EventList from "../EventList/EventList";
 import EventForm from "../EventForm/EventForm";
+import cuid from "cuid";
 
 const events = [
   {
@@ -55,15 +56,47 @@ const events = [
 ];
 
 class EventDashboard extends Component {
+  state = {
+    events: events,
+    isOpen: false,
+  };
+
+  handleIsOpenToggle = () => {
+    this.setState(({ isOpen }) => ({
+      isOpen: !isOpen,
+    }));
+  };
+
+  //takes in values from EventForm to create a new Event
+  //uses fake id for now until we implement database to generate unique id. using 'cuid'
+  handleCreateEvent = (newEvent) => {
+    newEvent.id = cuid();
+    newEvent.hostPhotoURL = "/assets/user.png";
+    this.setState(({ events }) => ({
+      events: [...events, newEvent],
+      isOpen: false,
+    }));
+  };
+
   render() {
+    const { events, isOpen } = this.state;
     return (
       <Grid>
         <Grid.Column width={10}>
           <EventList events={events} />
         </Grid.Column>
         <Grid.Column width={6}>
-          <Button positive content="Create Event" />
-          <EventForm />
+          <Button
+            positive
+            content="Create Event"
+            onClick={this.handleIsOpenToggle}
+          />
+          {isOpen && (
+            <EventForm
+              createEvent={this.handleCreateEvent}
+              cancelFormOpen={this.handleIsOpenToggle}
+            />
+          )}
         </Grid.Column>
       </Grid>
     );
