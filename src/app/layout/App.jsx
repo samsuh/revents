@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import EventDashboard from "../../features/event/EventDashboard/EventDashboard";
 import NavBar from "../../features/nav/NavBar/NavBar";
 import { Container } from "semantic-ui-react";
-import { Route } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import HomePage from "../../features/home/HomePage";
 import EventDetailsPage from "../../features/event/EventDetailsPage/EventDetailsPage";
 import PeopleDashboard from "../../features/user/PeopleDashboard/PeopleDashboard";
@@ -22,13 +22,18 @@ class App extends Component {
             <>
               <NavBar />
               <Container className="main">
-                <Route path="/events" component={EventDashboard} />
-                <Route path="/events/:id" component={EventDetailsPage} />
-                <Route path="/people" component={PeopleDashboard} />
-                <Route path="/profile/:id" component={UserDetailsPage} />
-                <Route path="/settings" component={SettingsDashboard} />
-                <Route path="/createEvent" component={EventForm} />
-                <Route path="/test" component={TestComponent} />
+                <Switch key={this.props.location.key}>
+                  <Route path="/events" exact component={EventDashboard} />
+                  <Route path="/events/:id" component={EventDetailsPage} />
+                  <Route path="/people" component={PeopleDashboard} />
+                  <Route path="/profile/:id" component={UserDetailsPage} />
+                  <Route path="/settings" component={SettingsDashboard} />
+                  <Route
+                    path={["/createEvent", "/manage/:id"]}
+                    component={EventForm}
+                  />
+                  <Route path="/test" component={TestComponent} />
+                </Switch>
               </Container>
             </>
           )}
@@ -38,4 +43,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);
