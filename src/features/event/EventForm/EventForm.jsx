@@ -1,12 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
+import {
+  composeValidators,
+  combineValidators,
+  isRequired,
+  hasLengthGreaterThan,
+} from "revalidate";
 import { Segment, Form, Button, Grid, Header } from "semantic-ui-react";
 import { createEvent, updateEvent } from "../eventActions";
 import cuid from "cuid";
 import TextInput from "../../../app/common/form/TextInput";
 import TextArea from "../../../app/common/form/TextArea";
 import SelectInput from "../../../app/common/form/SelectInput";
+import DateInput from "../../../app/common/form/DateInput";
 
 const mapStateToProps = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
@@ -32,6 +39,20 @@ const actions = {
   createEvent,
   updateEvent,
 };
+
+const validate = combineValidators({
+  title: isRequired({ message: "The event title is required" }),
+  category: isRequired({ message: "The category is required" }),
+  description: composeValidators(
+    isRequired({ message: "Please enter a description" }),
+    hasLengthGreaterThan(4)({
+      message: "Description must be at least 5 characters",
+    })
+  )(),
+  city: isRequired("city"),
+  venue: isRequired("venue"),
+  date: isRequired("date"),
+});
 
 const category = [
   { key: "drinks", text: "Drinks", value: "drinks" },
@@ -99,7 +120,13 @@ class EventForm extends Component {
     // const { title, date, city, venue, hostedBy } = this.state;
 
     //fix goBack history
-    const { history, initialValues } = this.props;
+    const {
+      history,
+      initialValues,
+      invalid,
+      submitting,
+      pristine,
+    } = this.props;
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -137,6 +164,7 @@ class EventForm extends Component {
                 placeholder="Tell us about your event"
                 rows={3}
               />
+
               <Header sub color="teal" content="Event Location Details" />
               <Field
                 name="city"
@@ -150,8 +178,12 @@ class EventForm extends Component {
               />
               <Field
                 name="date"
-                component={TextInput}
+                component={DateInput}
                 placeholder="Event Date"
+                // dateFormat="EEE, LLL dd yyyy h :mm a"
+                dateFormat="EEE, LLL dd yyyy h:mm a"
+                showTimeSelect
+                timeFormat="h:mm a"
               />
               {/* Before we implemented Redux-Form
           <Form.Field>
@@ -193,7 +225,11 @@ class EventForm extends Component {
               }
             />
           </Form.Field> */}
-              <Button positive type="submit">
+              <Button
+                positive
+                type="submit"
+                disabled={invalid || submitting || pristine}
+              >
                 Submit
               </Button>
               {/* <Button type="button" onClick={cancelFormOpen}> */}
@@ -219,4 +255,4 @@ class EventForm extends Component {
 export default connect(
   mapStateToProps,
   actions
-)(reduxForm({ form: "eventForm" })(EventForm));
+)(reduxForm({ form: "eventForm", validate })(EventForm));
