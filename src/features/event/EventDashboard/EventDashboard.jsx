@@ -7,6 +7,7 @@ import EventList from "../EventList/EventList";
 // import EventForm from "../EventForm/EventForm";
 import { createEvent, updateEvent, deleteEvent } from "../eventActions";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
+import EventActivity from "../EventActivity/EventActivity";
 
 const mapStateToProps = (state) => ({
   events: state.events,
@@ -103,7 +104,8 @@ class EventDashboard extends Component {
           />
         </Grid.Column>
         <Grid.Column width={6}>
-          <h2>Activity Feed Goes Here</h2>
+          {/* <h2>Activity Feed Goes Here</h2> */}
+          <EventActivity />
           {/* <Button
             positive
             content="Create Event"
