@@ -6,9 +6,11 @@ import { connect } from "react-redux";
 import EventList from "../EventList/EventList";
 // import EventForm from "../EventForm/EventForm";
 import { createEvent, updateEvent, deleteEvent } from "../eventActions";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 const mapStateToProps = (state) => ({
   events: state.events,
+  loading: state.async.loading,
 });
 
 const actions = {
@@ -87,9 +89,10 @@ class EventDashboard extends Component {
 
   render() {
     // const { isOpen, selectedEvent } = this.state;
-    const { events } = this.props;
+    const { events, loading } = this.props;
     // const { events, isOpen, selectedEvent } = this.state; //no longer getting props from state after mapping state to props
     // console.log("selectedEvent from Dashboard", selectedEvent);
+    if (loading) return <LoadingComponent />;
     return (
       <Grid>
         <Grid.Column width={10}>
