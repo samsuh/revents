@@ -7,14 +7,15 @@ export default class EventList extends Component {
     const { events, deleteEvent } = this.props;
     return (
       <>
-        {events.map((event) => (
-          <EventListItem
-            key={event.id}
-            event={event}
-            // selectEvent={selectEvent}
-            deleteEvent={deleteEvent}
-          />
-        ))}
+        {events &&
+          events.map((event) => (
+            <EventListItem
+              key={event.id}
+              event={event}
+              // selectEvent={selectEvent}
+              deleteEvent={deleteEvent}
+            />
+          ))}
       </>
     );
   }

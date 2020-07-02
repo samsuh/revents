@@ -9,11 +9,11 @@ import { Provider } from "react-redux";
 import ReduxToastr from "react-redux-toastr";
 import { configureStore } from "./store/configureStore";
 import ScrollToTop from "./app/common/util/ScrollToTop";
-import { loadEvents } from "./features/event/eventActions";
+// import { loadEvents } from "./features/event/eventActions";
 
 const store = configureStore();
 // console.log(store.getState());
-store.dispatch(loadEvents());
+// store.dispatch(loadEvents()); //now we get it from firestore.
 
 ReactDOM.render(
   <Provider store={store}>
