@@ -15,21 +15,23 @@ const store = configureStore();
 // console.log(store.getState());
 // store.dispatch(loadEvents()); //now we get it from firestore.
 
-ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <ScrollToTop>
-        <ReduxToastr
-          position="bottom-right"
-          transitionIn="fadeIn"
-          transitionOut="fadeOut"
-        />
-        <App />
-      </ScrollToTop>
-    </BrowserRouter>
-  </Provider>,
-  document.getElementById("root")
-);
+store.firebaseAuthIsReady.then(() => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <ScrollToTop>
+          <ReduxToastr
+            position="bottom-right"
+            transitionIn="fadeIn"
+            transitionOut="fadeOut"
+          />
+          <App />
+        </ScrollToTop>
+      </BrowserRouter>
+    </Provider>,
+    document.getElementById("root")
+  );
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
