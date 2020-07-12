@@ -25,7 +25,6 @@ const SignedInMenu = ({ signOut, profile, auth }) => {
             text="My Profile"
             icon="users"
           />
-          <Dropdown.Item text="My Profile" icon="user" />
           <Dropdown.Item
             text="Settings"
             icon="settings"
