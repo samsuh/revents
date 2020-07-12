@@ -70,6 +70,7 @@ class NavBar extends Component {
               // currentUser={auth.currentUser}
               // auth={auth}
               profile={profile}
+              auth={auth}
             />
           ) : (
             <SignedOutMenu
