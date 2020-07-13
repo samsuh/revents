@@ -1,5 +1,5 @@
 import {
-  CREATE_EVENT,
+  // CREATE_EVENT,
   UPDATE_EVENT,
   DELETE_EVENT,
   FETCH_EVENTS,
@@ -11,17 +11,43 @@ import {
 } from "../async/asyncActions";
 import { fetchSampleData } from "../../app/data/mockApi";
 import { toastr } from "react-redux-toastr";
+import { createNewEvent } from "../../app/common/util/helpers";
 
+// create using form data 'event' to dispatch action.
+// export const createEvent = (event) => {
+//   return async (dispatch) => {
+//     try {
+//       dispatch({
+//         type: CREATE_EVENT,
+//         payload: {
+//           event,
+//         },
+//       });
+//       toastr.success("Success!", "Event has been created");
+//     } catch (error) {
+//       toastr.error("Oops", "Something went wrong");
+//     }
+//   };
+// };
+
+//createEvent using firestore
 export const createEvent = (event) => {
-  return async (dispatch) => {
+  return async (dispatch, getState, { getFirestore, getFirebase }) => {
+    const firestore = getFirestore();
+    const firebase = getFirebase();
+    const user = firebase.auth().currentUser; //user's auth profile
+    const photoURL = getState().firebase.profile.photoURL; //photo from user's firestore profile (may not be up to date)
+    const newEvent = createNewEvent(user, photoURL, event); //method to shape data and return event object. pass that event object to firestore. in common/util/helpers.js
     try {
-      dispatch({
-        type: CREATE_EVENT,
-        payload: {
-          event,
-        },
+      let createdEvent = await firestore.add("events", newEvent);
+      await firestore.set(`event_attendee/${createdEvent.id}_${user.uid}`, {
+        eventId: createdEvent.id,
+        userUid: user.uid,
+        eventDate: event.date,
+        host: true,
       });
       toastr.success("Success!", "Event has been created");
+      return createdEvent;
     } catch (error) {
       toastr.error("Oops", "Something went wrong");
     }
