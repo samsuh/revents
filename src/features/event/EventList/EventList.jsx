@@ -4,7 +4,8 @@ import EventListItem from "./EventListItem";
 export default class EventList extends Component {
   render() {
     // const { events, selectEvent, deleteEvent } = this.props;
-    const { events, deleteEvent } = this.props;
+    // const { events, deleteEvent } = this.props; // no longer need deleteEvent from EventListItem
+    const { events } = this.props;
     return (
       <>
         {events &&
@@ -13,7 +14,7 @@ export default class EventList extends Component {
               key={event.id}
               event={event}
               // selectEvent={selectEvent}
-              deleteEvent={deleteEvent}
+              // deleteEvent={deleteEvent}
             />
           ))}
       </>

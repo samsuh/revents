@@ -1,7 +1,7 @@
 import {
   // CREATE_EVENT,
-  UPDATE_EVENT,
-  DELETE_EVENT,
+  // UPDATE_EVENT,
+  // DELETE_EVENT,
   FETCH_EVENTS,
 } from "./eventConstants";
 import {
@@ -55,14 +55,16 @@ export const createEvent = (event) => {
 };
 
 export const updateEvent = (event) => {
-  return async (dispatch) => {
+  return async (dispatch, getState, { getFirestore }) => {
+    const firestore = getFirestore();
     try {
-      dispatch({
-        type: UPDATE_EVENT,
-        payload: {
-          event,
-        },
-      });
+      await firestore.update(`events/${event.id}`, event);
+      // dispatch({
+      //   type: UPDATE_EVENT,
+      //   payload: {
+      //     event,
+      //   },
+      // });
       toastr.success("Success!", "Event has been updated");
     } catch (error) {
       toastr.error("Oops", "Something went wrong");
@@ -70,14 +72,35 @@ export const updateEvent = (event) => {
   };
 };
 
-export const deleteEvent = (eventId) => {
-  return {
-    type: DELETE_EVENT,
-    payload: {
-      eventId,
-    },
-  };
+export const cancelToggle = (cancelled, eventId) => async (
+  dispatch,
+  getState,
+  { getFirestore }
+) => {
+  const firestore = getFirestore();
+  const message = cancelled
+    ? "Are you sure you want to cancel this event?"
+    : "This will reactivate the event. Are you sure?";
+  try {
+    toastr.confirm(message, {
+      onOk: async () =>
+        await firestore.update(`events/${eventId}`, {
+          cancelled: cancelled,
+        }),
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
+
+// export const deleteEvent = (eventId) => {
+//   return {
+//     type: DELETE_EVENT,
+//     payload: {
+//       eventId,
+//     },
+//   };
+// };
 
 //call loadEvents from index.js from store's dispatch
 export const loadEvents = () => {

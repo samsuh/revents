@@ -37,6 +37,7 @@ class EventDetailsPage extends Component {
       toastr.error("Event not Found", "Check url and try again");
     }
   }
+
   render() {
     const { event } = this.props;
     const attendees =

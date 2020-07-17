@@ -5,7 +5,8 @@ import { Grid } from "semantic-ui-react";
 import { connect } from "react-redux";
 import EventList from "../EventList/EventList";
 // import EventForm from "../EventForm/EventForm";
-import { createEvent, updateEvent, deleteEvent } from "../eventActions";
+// import { createEvent, updateEvent, deleteEvent } from "../eventActions";
+import { createEvent, updateEvent } from "../eventActions";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import EventActivity from "../EventActivity/EventActivity";
 import { firestoreConnect } from "react-redux-firebase";
@@ -19,7 +20,7 @@ const mapStateToProps = (state) => ({
 const actions = {
   createEvent,
   updateEvent,
-  deleteEvent,
+  // deleteEvent,
 };
 
 class EventDashboard extends Component {

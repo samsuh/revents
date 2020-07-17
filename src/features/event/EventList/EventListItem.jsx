@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Segment, Item, Icon, List, Button } from "semantic-ui-react";
+import { Segment, Item, Icon, List, Button, Label } from "semantic-ui-react";
 import EventListAttendee from "./EventListAttendee";
 import { Link } from "react-router-dom";
 // import { format, parseISO } from "date-fns";
@@ -8,7 +8,8 @@ import { format } from "date-fns";
 export default class EventListItem extends Component {
   render() {
     // const { event, selectEvent, deleteEvent } = this.props;
-    const { event, deleteEvent } = this.props;
+    // const { event, deleteEvent } = this.props;
+    const { event } = this.props;
     return (
       <Segment.Group>
         <Segment>
@@ -22,6 +23,14 @@ export default class EventListItem extends Component {
                   {/* Hosted by <a>{event.hostedBy}</a> */}
                   Hosted by {event.hostedBy}
                 </Item.Description>
+                {event.cancelled && (
+                  <Label
+                    style={{ top: "-40px" }}
+                    ribbon="right"
+                    color="red"
+                    content="This event has been cancelled"
+                  />
+                )}
               </Item.Content>
             </Item>
           </Item.Group>
@@ -50,13 +59,13 @@ export default class EventListItem extends Component {
         </Segment>
         <Segment clearing>
           <span>{event.description}</span>
-          <Button
+          {/* <Button
             as="a"
             color="red"
             floated="right"
             content="Delete"
             onClick={() => deleteEvent(event.id)}
-          />
+          /> */}
           <Button
             as={Link}
             to={`events/${event.id}`}
