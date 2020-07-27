@@ -2,39 +2,48 @@ import React, { Component } from "react";
 import { Grid } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { firestoreConnect } from "react-redux-firebase";
+import { firestoreConnect, isEmpty } from "react-redux-firebase";
 import UserDetailsHeader from "./UserDetailsHeader";
 import UserDetailsDescription from "./UserDetailsDescription";
 import UserDetailsPhotos from "./UserDetailsPhotos";
 import UserDetailsSidebar from "./UserDetailsSidebar";
 import UserDetailsEvents from "./UserDetailsEvents";
+import { userDetailsQuery } from "../userQueries";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
-const query = ({ auth }) => {
-  return [
-    {
-      collection: "users",
-      doc: auth.uid,
-      subcollections: [{ collection: "photos" }],
-      storeAs: "photos",
-    },
-  ];
+const mapStateToProps = (state, ownProps) => {
+  let userUid = null;
+  let profile = {};
+  if (ownProps.match.params.id === state.auth.uid) {
+    profile = state.firebase.profile;
+  } else {
+    profile =
+      !isEmpty(state.firestore.ordered.profile) &&
+      state.firestore.ordered.profile[0];
+    userUid = ownProps.match.params.id;
+  }
+
+  return {
+    profile,
+    userUid,
+    auth: state.firebase.auth,
+    photos: state.firestore.ordered.photos,
+    requesting: state.firestore.status.requesting,
+  };
 };
-
-const mapStateToProps = (state) => ({
-  profile: state.firebase.profile,
-  auth: state.firebase.auth,
-  photos: state.firestore.ordered.photos,
-});
 
 class UserDetailsPage extends Component {
   render() {
-    const { profile, photos } = this.props;
+    const { profile, photos, auth, match, requesting } = this.props;
+    const isCurrentUser = auth.uid === match.params.id;
+    const loading = Object.values(requesting).some((a) => a === true);
+    if (loading) return <LoadingComponent />;
 
     return (
       <Grid>
         <UserDetailsHeader profile={profile} />
         <UserDetailsDescription profile={profile} />
-        <UserDetailsSidebar />
+        <UserDetailsSidebar isCurrentUser={isCurrentUser} />
         {photos && photos.length > 0 && <UserDetailsPhotos photos={photos} />}
         <UserDetailsEvents />
       </Grid>
@@ -44,5 +53,5 @@ class UserDetailsPage extends Component {
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect((auth) => query(auth))
+  firestoreConnect((auth, userUid) => userDetailsQuery(auth, userUid))
 )(UserDetailsPage);

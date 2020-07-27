@@ -9,12 +9,12 @@ import EventList from "../EventList/EventList";
 import { createEvent, updateEvent } from "../eventActions";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import EventActivity from "../EventActivity/EventActivity";
-import { firestoreConnect } from "react-redux-firebase";
+import { firestoreConnect, isLoaded } from "react-redux-firebase";
 
 const mapStateToProps = (state) => ({
   // events: state.events,
   events: state.firestore.ordered.events,
-  loading: state.async.loading,
+  // loading: state.async.loading,
 });
 
 const actions = {
@@ -93,10 +93,11 @@ class EventDashboard extends Component {
 
   render() {
     // const { isOpen, selectedEvent } = this.state;
-    const { events, loading } = this.props;
+    // const { events, loading } = this.props;
+    const { events } = this.props;
     // const { events, isOpen, selectedEvent } = this.state; //no longer getting props from state after mapping state to props
     // console.log("selectedEvent from Dashboard", selectedEvent);
-    if (loading) return <LoadingComponent />;
+    if (!isLoaded(events)) return <LoadingComponent />;
     return (
       <Grid>
         <Grid.Column width={10}>
